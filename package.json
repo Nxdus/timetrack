@@ -9,21 +9,30 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "timetrack.helloWorld",
-        "title": "Hello World"
+        "command": "timetrack.openStats",
+        "title": "TimeTrack: Open Stats"
+      },
+      {
+        "command": "timetrack.resetData",
+        "title": "TimeTrack: Reset All Data"
       }
     ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
-    "compile": "webpack",
+    "compile": "npm run webview:build && webpack",
     "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
+    "package": "npm run webview:build && webpack --mode production --devtool hidden-source-map",
+    "webview:install": "npm --prefix webview-ui install",
+    "webview:build": "npm --prefix webview-ui run build",
+    "webview:dev": "npm --prefix webview-ui run dev",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
