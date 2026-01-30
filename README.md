@@ -1,71 +1,111 @@
-# timetrack README
+# TimeTrack (VS Code Extension)
 
-This is the README for your extension "timetrack". After writing up a brief description, we recommend including the following sections.
+## Description
+
+TimeTrack is a Visual Studio Code extension that tracks your active coding time automatically and summarizes it in a visual dashboard. It groups time by project (workspace folder) and by date, then presents totals for today, a selectable date range, the current month, and all time. It also provides language and framework breakdowns based on the files you edit and the dependencies detected in each workspace.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Automatic Active Coding Time tracking while you work in VS Code
+- Project-based and day-based tracking (workspace folder + YYYY-MM-DD)
+- Live status bar timer with active/idle indicator
+- Dashboard cards for today, selected range, this month, and all time
+- Stacked bar chart that compares project time by day
+- Pie charts for language and framework breakdowns
+- History table with paging and per-day delete (today is protected)
+- One-click reset to clear all stored history
 
-For example if there is an image subfolder under your extension project workspace:
+## Quick Start
 
-\!\[feature X\]\(images/feature-x.png\)
+1. Open VS Code and work normally
+2. Watch the timer in the Status Bar (bottom-right)
+3. Open the dashboard using:
+   - `TimeTrack: Open Stats`
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Commands
 
-## Requirements
+- `TimeTrack: Open Stats` - Open the stats dashboard (Webview)
+- `TimeTrack: Reset All Data` - Remove all stored history (confirmation required)
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## How Tracking Works
 
-## Extension Settings
+- Time ticks every 1 second
+- Only counts time while youre considered active:
+  - Recent activity within **1 minute** (typing/selection/editor changes)
+  - VS Code window is focused
+  - A workspace is open
+- Project is identified by **workspace folder name**
+- Today's time updates in real-time and is persisted periodically
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## Language & Framework Detection
 
-For example:
+- Language comes from the active document `languageId` and is normalized for readability
+- Frameworks are inferred from `package.json` and common config files, including:
+  - Next.js, Nuxt, Angular, Vue, React, Svelte, Astro, Remix
+  - NestJS, Express, Fastify, Koa, Vite
+  - Django, Rails
+- If no match is found, it falls back to `Unknown`
 
-This extension contributes the following settings:
+## Data Storage & Privacy
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- All data is stored **locally** in VS Code `globalState`
+- No external network calls or sync
+- Storage keys:
+  - `timetrack.history`
+  - `timetrack.languageHistory`
+  - `timetrack.frameworkHistory`
 
-## Known Issues
+## Tech Stack & Structure
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- VS Code Extension (TypeScript, Webpack)
+- Webview UI (React 19 + Vite)
+- UI components: shadcn + Tailwind CSS
+- Charts: Recharts
 
-## Release Notes
+Key paths:
 
-Users appreciate release notes as you update your extension.
+- `src/extension.ts` - tracking logic, persistence, commands
+- `webview-ui/` - stats dashboard frontend
+- `dist/` - build output used by the extension
 
-### 1.0.0
+## Development
 
-Initial release of ...
+### Requirements
 
-### 1.0.1
+- Node.js (LTS recommended)
+- VS Code
 
-Fixed issue #.
+### Install
 
-### 1.1.0
+```bash
+npm install
+npm run webview:install
+```
 
-Added features X, Y, and Z.
+### Dev
 
----
+```bash
+npm run webview:dev
+npm run watch
+```
 
-## Following extension guidelines
+### Build
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+```bash
+npm run compile
+```
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+### Package
 
-## Working with Markdown
+```bash
+npm run package
+```
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+## Notes
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+- This extension does not contribute any VS Code settings via `contributes.configuration`
+- Today's rows cannot be deleted to avoid conflicts with live tracking
 
-## For more information
+## License
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+MIT
